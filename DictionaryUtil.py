@@ -1,5 +1,5 @@
 import sqlite3
-from time import gmtime, strftime, localtime
+from time import strftime, localtime
 
 
 class DictionaryWord:
