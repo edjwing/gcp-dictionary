@@ -82,6 +82,9 @@ class DicManager:
         self.cur_dictionary = self.dic_db.read_all()
         return self.cur_dictionary
 
+    def del_word_in_dictionary(self, word):
+        self.dic_db.delete_record(word)
+
     def set_word(self, word):
         self.cur_word = word
 

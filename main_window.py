@@ -72,6 +72,11 @@ tree_dic.tag_configure('even', background='white')
 tree_dic.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.YES)
 fm_list.pack(side=tk.TOP, padx=10, pady=10, fill=tk.X, expand=tk.YES)
 
+fm_db_ctrl = tk.Frame(root)
+button_delete = tk.Button(fm_db_ctrl, text='Delete', font=(myf, mys), bg='light gray')
+button_delete.pack(side=tk.LEFT)
+fm_db_ctrl.pack(side=tk.TOP, padx=10, pady=10)
+
 
 def set_word_info(word):
     fr_text.set(word.text)
@@ -92,8 +97,9 @@ def refresh_dict_list():
             else:
                 tree_dic.insert('', 'end', text=str(i), values=(word.text, word.korean, word.english), tags=('odd',))
 
+
 def set_selection_last_word(word):
-    index = dic_manager.get_word_index(dic_manager.cur_word)
+    tree_dic.focus((word.text, word.korean, word.english))
 
 
 def btn_translate(event):
@@ -106,6 +112,7 @@ def btn_translate(event):
     else:
         word_info = dic_manager.translate_new()
         refresh_dict_list()
+        # set_selection_last_word(word_info)
     set_word_info(word_info)
 
 
@@ -117,9 +124,17 @@ def btn_play_slow(event):
     dic_manager.play_mp3_slow()
 
 
+def btn_delete_record(event):
+    cur_item = tree_dic.focus()
+    index = tree_dic.index(cur_item)
+    selected_word = dic_manager.cur_dictionary[index]
+    dic_manager.del_word_in_dictionary(selected_word)
+    refresh_dict_list()
+
+
 def list_selected(event):
-    curItem = tree_dic.focus()
-    index = tree_dic.index(curItem)
+    cur_item = tree_dic.focus()
+    index = tree_dic.index(cur_item)
     selected_word = dic_manager.cur_dictionary[index]
     dic_manager.set_word(selected_word)
     set_word_info(selected_word)
@@ -130,6 +145,7 @@ button_trans.bind('<Button-1>', btn_translate)
 button_play_n.bind('<Button-1>', btn_play_normal)
 button_play_s.bind('<Button-1>', btn_play_slow)
 tree_dic.bind('<ButtonRelease-1>', list_selected)
+button_delete.bind('<Button-1>', btn_delete_record)
 
 refresh_dict_list()
 root.mainloop()

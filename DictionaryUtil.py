@@ -4,6 +4,7 @@ from time import strftime, localtime
 
 class DictionaryWord:
 
+    id = None
     text = None
     fr_article = None
     fr_word = None
@@ -26,15 +27,16 @@ class DictionaryWord:
                 self.fr_word = delimiter.join(token[1:])
 
     def set_from_db_record(self, record):
-        self.text = record[0]
-        self.fr_article = record[1]
-        self.fr_word = record[2]
-        self.korean = record[3]
-        self.english = record[4]
-        self.mp3_file = record[5]
-        self.mp3_file_slow = record[6]
-        self.etc = record[7]
-        self.date = record[8]
+        self.id = record[0]
+        self.text = record[1]
+        self.fr_article = record[2]
+        self.fr_word = record[3]
+        self.korean = record[4]
+        self.english = record[5]
+        self.mp3_file = record[6]
+        self.mp3_file_slow = record[7]
+        self.etc = record[8]
+        self.date = record[9]
 
     def set_time(self):
         if self.date is None or self.date == '':
@@ -54,6 +56,7 @@ class DictionaryDB:
 
     table_name = 'dictionary'
 
+    col_id = 'id'
     col_french = 'french'
     col_fr_article = 'fr_article'
     col_fr_word = 'fr_word'
@@ -72,13 +75,20 @@ class DictionaryDB:
         else:
             return False
 
-    def connect_db(self, name='mydic_v2.db'):
+    def connect_db(self, name='mydic_fr_v1.db'):
         self.conn = sqlite3.connect(name)
         cur = self.conn.cursor()
-        cmd = 'CREATE TABLE IF NOT EXISTS ' + self.table_name + '(' \
-              + self.col_french + ' TEXT, ' + self.col_fr_article + ' TEXT, ' + self.col_fr_word + ' TEXT, '\
-              + self.col_korean + ' TEXT, ' + self.col_english + ' TEXT, ' + self.col_mp3_file + ' TEXT, ' \
-              + self.col_mp3_file_slow + ' TEXT, ' + self.col_etc + ' TEXT, ' + self.col_date + ' TEXT)'
+        cmd = 'CREATE TABLE IF NOT EXISTS ' + self.table_name\
+              + ' (id INTEGER PRIMARY KEY AUTOINCREMENT, '\
+              + self.col_french + ' TEXT, '\
+              + self.col_fr_article + ' TEXT, '\
+              + self.col_fr_word + ' TEXT, '\
+              + self.col_korean + ' TEXT, '\
+              + self.col_english + ' TEXT, '\
+              + self.col_mp3_file + ' TEXT, '\
+              + self.col_mp3_file_slow + ' TEXT, '\
+              + self.col_etc + ' TEXT, '\
+              + self.col_date + ' TEXT)'
         print('connect_db =', cmd)
         cur.execute(cmd)
         self.conn.commit()
@@ -108,7 +118,7 @@ class DictionaryDB:
         else:
             return None
 
-    def insert_record(self, record):
+    def insert_record_by_word(self, dic_word):
         if self.conn is not None:
             cur = self.conn.cursor()
             cmd = 'INSERT INTO ' + self.table_name + '(' \
@@ -117,23 +127,33 @@ class DictionaryDB:
                   + self.col_mp3_file_slow + ', ' + self.col_etc + ', ' + self.col_date\
                   + ') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
             print('insert_record :', cmd)
-            cur.execute(cmd, record)
+            cur.execute(cmd, dic_word.get_record())
             self.conn.commit()
             cur.close()
 
-    def insert_record_by_word(self, dic_word):
-        self.insert_record(dic_word.get_record())
-
-    def find_record(self, word):
+    def find_record(self, key_text):
+        result = None
         if self.conn is not None:
             cur = self.conn.cursor()
-            cmd = 'SELECT * FROM ' + self.table_name + ' WHERE ' + self.col_fr_word + ' = \'' + word + '\''
+            cmd = 'SELECT * FROM ' + self.table_name + ' WHERE ' + self.col_fr_word + ' = \'' + key_text + '\''
             print('find_record :', cmd)
             cur.execute(cmd)
             for record in cur:
-                return record
+                result = record
+                break
+            cur.close()
+            return result
         else:
             return None
+
+    def delete_record(self, dic_word):
+        if self.conn is not None:
+            cur = self.conn.cursor()
+            cmd = 'DELETE FROM ' + self.table_name + ' WHERE ' + self.col_id + ' = \'' + str(dic_word.id) + '\''
+            print('delete_record :', cmd)
+            cur.execute(cmd)
+            self.conn.commit()
+            cur.close()
 
 
 class Constant:
