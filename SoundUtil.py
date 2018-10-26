@@ -5,12 +5,6 @@ class PlaySound:
 
     def mp3_play(self, file, folder=''):
 
-        # directory = str(os.curdir)
-        # print('dir :', directory)
-        # directory = directory + '\\' + self.path
-        # print('dir :', directory)
-        # os.chdir(directory)
-
         if folder != '':
             file = folder + '\\' + file
 
