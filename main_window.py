@@ -6,7 +6,6 @@ import DicManager
 class GcpDictionaryWindow:
 
     dic_manager = None
-
     tk_root = None
     fr_text = None
     kr_text = None
@@ -81,7 +80,7 @@ class GcpDictionaryWindow:
         self.tree_dic.column('#0', width=80)
         self.tree_dic.column('#1', stretch=tk.YES)
         self.tree_dic.column('#2', stretch=tk.YES)
-        self.tree_dic.column('#0', stretch=tk.YES)
+        self.tree_dic.column('#3', stretch=tk.YES)
         self.tree_dic.tag_configure('odd', background='light yellow')
         self.tree_dic.tag_configure('even', background='white')
         self.tree_dic.pack(side=tk.LEFT, fill=tk.BOTH, expand=tk.YES)

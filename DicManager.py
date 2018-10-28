@@ -1,3 +1,4 @@
+import os
 import GCPutil
 import SoundUtil
 import DictionaryUtil
@@ -15,6 +16,7 @@ class DicManager:
 
     def __init__(self):
         print('Initialize Dictionary Manager...')
+        self.init_dir()
         self.translator = GCPutil.GTranslator()
         self.tts = GCPutil.GTextToSpeech()
         self.sound_player = SoundUtil.PlaySound()
@@ -23,6 +25,11 @@ class DicManager:
         self.new_word = DictionaryUtil.DictionaryWord()
         self.dic_db.connect_db()
         print('Initialize Done!')
+
+    def init_dir(self):
+        if 'fr_data' not in os.listdir('.'):
+            os.mkdir('fr_data')
+        os.chdir('fr_data')
 
     def set_text(self, text):
         self.cur_word = DictionaryUtil.DictionaryWord()
@@ -61,11 +68,11 @@ class DicManager:
 
     def play_mp3(self):
         if self.cur_word.mp3_file is not None and self.cur_word.mp3_file != '':
-            self.sound_player.mp3_play(self.cur_word.mp3_file, 'mp3')
+            self.sound_player.mp3_play(self.cur_word.mp3_file)
 
     def play_mp3_slow(self):
         if self.cur_word.mp3_file_slow is not None and self.cur_word.mp3_file_slow != '':
-            self.sound_player.mp3_play(self.cur_word.mp3_file_slow, 'mp3')
+            self.sound_player.mp3_play(self.cur_word.mp3_file_slow)
 
     def translate_new(self):
         self.new_word.korean = self.translator.trans_to_kor(self.new_word.text)
@@ -74,7 +81,7 @@ class DicManager:
         self.new_word.mp3_file_slow = self.tts.tts_to_mp3(self.new_word.text, 0.7)
         self.new_word.set_time()
         self.dic_db.insert_record_by_word(self.new_word)
-        self.sound_player.mp3_play(self.new_word.mp3_file_slow, 'mp3')
+        self.sound_player.mp3_play(self.new_word.mp3_file_slow)
         self.cur_word = self.new_word
         return self.new_word
 

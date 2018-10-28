@@ -1,7 +1,6 @@
 # Imports the Google Cloud client library
 from google.cloud import translate
 from google.cloud import texttospeech
-import os
 
 
 class GTranslator:
@@ -31,8 +30,6 @@ class GTextToSpeech:
     voice = None
 
     def __init__(self, language='fr'):
-        if 'mp3' not in os.listdir('.'):
-            os.mkdir('mp3')
         # Instantiates a client
         self.client = texttospeech.TextToSpeechClient()
         self.voice = texttospeech.types.VoiceSelectionParams(
@@ -46,11 +43,10 @@ class GTextToSpeech:
             audio_encoding=texttospeech.enums.AudioEncoding.MP3)
         response = self.client.synthesize_speech(synthesis_input, self.voice, audio_config)
 
-        file_name = text + '_' + str(int(speed*100)) + '.mp3'
-        out_file = 'mp3\\' + file_name
+        out_file = text + '_' + str(int(speed*100)) + '.mp3'
         with open(out_file, 'wb') as out:
             out.write(response.audio_content)
             out.close()
             print('Audio content written to file :', out_file)
 
-        return file_name
+        return out_file
