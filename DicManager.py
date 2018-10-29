@@ -75,13 +75,17 @@ class DicManager:
             self.sound_player.mp3_play(self.cur_word.mp3_file_slow)
 
     def translate_new(self):
-        self.new_word.korean = self.translator.trans_to_kor(self.new_word.text)
-        self.new_word.english = self.translator.trans_to_eng(self.new_word.text)
+        # self.new_word.korean = self.translator.trans_to_kor(self.new_word.text)
+        # self.new_word.english = self.translator.trans_to_eng(self.new_word.text)
+        self.new_word.korean = self.translator.gcp_translate(self.new_word.text, GCPutil.Constant.language['French'],
+                                                             GCPutil.Constant.language['Korean'])
+        self.new_word.english = self.translator.gcp_translate(self.new_word.text, GCPutil.Constant.language['French'],
+                                                              GCPutil.Constant.language['English'])
         self.new_word.mp3_file = self.tts.tts_to_mp3(self.new_word.text, 1.0)
-        self.new_word.mp3_file_slow = self.tts.tts_to_mp3(self.new_word.text, 0.7)
+        self.new_word.mp3_file_slow = self.tts.tts_to_mp3(self.new_word.text, 0.6)
         self.new_word.set_time()
         self.dic_db.insert_record_by_word(self.new_word)
-        self.sound_player.mp3_play(self.new_word.mp3_file_slow)
+        # self.sound_player.mp3_play(self.new_word.mp3_file_slow)
         self.cur_word = self.new_word
         return self.new_word
 

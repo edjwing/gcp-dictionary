@@ -126,12 +126,12 @@ class GcpDictionaryWindow:
         word_info = self.dic_manager.find_in_dictionary()
         if word_info is not None:
             print('Exist in Dictionary :', word_info)
-            self.dic_manager.play_mp3_slow()
         else:
             word_info = self.dic_manager.translate_new()
             self.refresh_dict_list()
             # set_selection_last_word(word_info)
         self.set_word_info(word_info)
+        self.dic_manager.play_mp3_slow()
 
     def btn_play_normal(self, event):
         self.dic_manager.play_mp3()

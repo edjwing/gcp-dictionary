@@ -13,15 +13,22 @@ class GTranslator:
         # Instantiates a client
         self.trans_client = translate.Client()
 
-    def trans_to_eng(self, text):
-        self.trans_en = self.trans_client.translate(text, target_language='en')
-        print('Translate [EN] :', text, '->', self.trans_en['translatedText'])
-        return self.trans_en['translatedText']
-
-    def trans_to_kor(self, text):
-        self.trans_ko = self.trans_client.translate(text, target_language='ko')
-        print('Translate [KO] :', text, '->', self.trans_ko['translatedText'])
+    def gcp_translate(self, text, source, target):
+        self.trans_ko = self.trans_client.translate(text, source_language=source, target_language=target)
+        print('Translate [' + target + '] :', text, '->', self.trans_ko['translatedText'])
         return self.trans_ko['translatedText']
+
+    # def trans_to_eng(self, text):
+    #     self.trans_en = self.trans_client.translate(text, source_language=Constant.language['French'],
+    #                                                 target_language=Constant.language['English'])
+    #     print('Translate [EN] :', text, '->', self.trans_en['translatedText'])
+    #     return self.trans_en['translatedText']
+    #
+    # def trans_to_kor(self, text):
+    #     self.trans_ko = self.trans_client.translate(text, source_language=Constant.language['French'],
+    #                                                 target_language=Constant.language['Korean'])
+    #     print('Translate [KO] :', text, '->', self.trans_ko['translatedText'])
+    #     return self.trans_ko['translatedText']
 
 
 class GTextToSpeech:
@@ -50,3 +57,7 @@ class GTextToSpeech:
             print('Audio content written to file :', out_file)
 
         return out_file
+
+
+class Constant:
+    language = {'English': 'en', 'French': 'fr', 'Korean': 'ko'}
