@@ -18,18 +18,6 @@ class GTranslator:
         print('Translate [' + target + '] :', text, '->', self.trans_ko['translatedText'])
         return self.trans_ko['translatedText']
 
-    # def trans_to_eng(self, text):
-    #     self.trans_en = self.trans_client.translate(text, source_language=Constant.language['French'],
-    #                                                 target_language=Constant.language['English'])
-    #     print('Translate [EN] :', text, '->', self.trans_en['translatedText'])
-    #     return self.trans_en['translatedText']
-    #
-    # def trans_to_kor(self, text):
-    #     self.trans_ko = self.trans_client.translate(text, source_language=Constant.language['French'],
-    #                                                 target_language=Constant.language['Korean'])
-    #     print('Translate [KO] :', text, '->', self.trans_ko['translatedText'])
-    #     return self.trans_ko['translatedText']
-
 
 class GTextToSpeech:
 
@@ -50,7 +38,7 @@ class GTextToSpeech:
             audio_encoding=texttospeech.enums.AudioEncoding.MP3)
         response = self.client.synthesize_speech(synthesis_input, self.voice, audio_config)
 
-        out_file = text + '_' + str(int(speed*100)) + '.mp3'
+        out_file = 'temp_' + str(int(speed*100)) + '.mp3'
         with open(out_file, 'wb') as out:
             out.write(response.audio_content)
             out.close()

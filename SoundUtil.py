@@ -1,5 +1,5 @@
 import pygame
-
+import time
 
 class PlaySound:
 
@@ -10,4 +10,6 @@ class PlaySound:
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             pygame.time.wait(100)
+        pygame.mixer.music.stop()
         pygame.mixer.quit()
+        time.sleep(1)

@@ -74,26 +74,37 @@ class DicManager:
         if self.cur_word.mp3_file_slow is not None and self.cur_word.mp3_file_slow != '':
             self.sound_player.mp3_play(self.cur_word.mp3_file_slow)
 
+    def temp_play_mp3(self):
+        if self.new_word.temp_mp3_file is not None and self.new_word.temp_mp3_file != '':
+            self.sound_player.mp3_play(self.new_word.temp_mp3_file)
+
+    def temp_play_mp3_slow(self):
+        if self.new_word.temp_mp3_file_slow is not None and self.new_word.temp_mp3_file_slow != '':
+            self.sound_player.mp3_play(self.new_word.temp_mp3_file_slow)
+
     def translate_new(self):
-        # self.new_word.korean = self.translator.trans_to_kor(self.new_word.text)
-        # self.new_word.english = self.translator.trans_to_eng(self.new_word.text)
         self.new_word.korean = self.translator.gcp_translate(self.new_word.text, GCPutil.Constant.language['French'],
                                                              GCPutil.Constant.language['Korean'])
         self.new_word.english = self.translator.gcp_translate(self.new_word.text, GCPutil.Constant.language['French'],
                                                               GCPutil.Constant.language['English'])
-        self.new_word.mp3_file = self.tts.tts_to_mp3(self.new_word.text, 1.0)
-        self.new_word.mp3_file_slow = self.tts.tts_to_mp3(self.new_word.text, 0.6)
+        self.new_word.temp_mp3_file = self.tts.tts_to_mp3(self.new_word.text, 1.0)
+        self.new_word.temp_mp3_file_slow = self.tts.tts_to_mp3(self.new_word.text, 0.6)
+        self.cur_word.mp3_file = self.new_word.temp_mp3_file
+        self.cur_word.mp3_file_slow = self.new_word.temp_mp3_file_slow
+        return self.new_word
+
+    def save_word(self):
+        self.new_word.store_mp3()
         self.new_word.set_time()
         self.dic_db.insert_record_by_word(self.new_word)
-        # self.sound_player.mp3_play(self.new_word.mp3_file_slow)
         self.cur_word = self.new_word
-        return self.new_word
 
     def get_cur_dictionary(self):
         self.cur_dictionary = self.dic_db.read_all()
         return self.cur_dictionary
 
     def del_word_in_dictionary(self, word):
+        word.delete_mp3()
         self.dic_db.delete_record(word)
 
     def set_word(self, word):

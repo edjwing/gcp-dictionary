@@ -1,5 +1,7 @@
+import os
 import sqlite3
 from time import strftime, localtime
+from shutil import move
 
 
 class DictionaryWord:
@@ -14,6 +16,8 @@ class DictionaryWord:
     mp3_file_slow = None
     etc = None
     date = None
+    temp_mp3_file = None
+    temp_mp3_file_slow = None
 
     def set_input_text(self, input_text):
         self.text = str(input_text).strip().lower()
@@ -41,6 +45,20 @@ class DictionaryWord:
     def set_time(self):
         if self.date is None or self.date == '':
             self.date = strftime("%Y-%m-%d %H:%M:%S", localtime())
+
+    def store_mp3(self):
+        if self.temp_mp3_file is not None and os.path.isfile(self.temp_mp3_file):
+            self.mp3_file = self.temp_mp3_file.replace('temp', self.text)
+            move(self.temp_mp3_file, self.mp3_file)
+        if self.temp_mp3_file_slow is not None and os.path.isfile(self.temp_mp3_file_slow):
+            self.mp3_file_slow = self.temp_mp3_file_slow.replace('temp', self.text)
+            move(self.temp_mp3_file_slow, self.mp3_file_slow)
+
+    def delete_mp3(self):
+        if self.mp3_file is not None and os.path.isfile(self.mp3_file):
+            os.remove(self.mp3_file)
+        if self.mp3_file_slow is not None and os.path.isfile(self.mp3_file_slow):
+            os.remove(self.mp3_file_slow)
 
     def get_record(self):
         result = (self.text, self.fr_article, self.fr_word, self.korean, self.english,
